@@ -12,11 +12,10 @@ app.post('/api/generate-statement', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Fallback pro případ, že by na Railway chyběla proměnná prostředí
         'api_key': process.env.BASE44_API_KEY || "eaa91acb148040a3bf601bac6860fad1",
-        // Přidáno chybějící ID aplikace pro autorizaci
-        'appId': "686dc5869b4a83e17e2d8b3d",
-        'app_id': "686dc5869b4a83e17e2d8b3d"
+        // Zde je to správné appId!
+        'appId': "69518883abb88815c54af5a9",
+        'app_id': "69518883abb88815c54af5a9"
       },
       body: JSON.stringify({ user_id, date_from, date_to })
     });
