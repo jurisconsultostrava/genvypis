@@ -1,4 +1,12 @@
-"dependencies": {
-  "@base44/sdk": "latest",
-  "express": "^4.18.2"
+{
+  "name": "statement-console",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@base44/sdk": "latest",
+    "express": "^4.18.2"
+  }
 }
