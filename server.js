@@ -3,13 +3,16 @@ import { createClient } from '@base44/sdk';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Nastavení absolutních cest pro ES moduly
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-
 app.use(express.json());
-app.use(express.static('public'));
 
-// Bezpečná inicializace přes proměnné prostředí
+// TADY JE TA HLAVNÍ ZMĚNA - Absolutní cesta do složky public
+app.use(express.static(path.join(__dirname, 'public')));
+
 const base44 = createClient({
   appId: process.env.BASE44_APP_ID || "686dc5869b4a83e17e2d8b3d",
   headers: {
@@ -32,8 +35,8 @@ app.post('/api/generate-statement', async (req, res) => {
   }
 });
 
-// Railway automaticky přiřazuje port přes process.env.PORT
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Konzole běží na portu: ${PORT}`);
+  console.log(`Hledám statické soubory ve složce: ${path.join(__dirname, 'public')}`);
 });
