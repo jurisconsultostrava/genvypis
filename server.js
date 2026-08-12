@@ -2,15 +2,15 @@ import express from 'express';
 import { createClient } from '@base44/sdk';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
-// Nastavení absolutních cest pro ES moduly
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 
-// TADY JE TA HLAVNÍ ZMĚNA - Absolutní cesta do složky public
+// Pokusí se naservírovat statické soubory
 app.use(express.static(path.join(__dirname, 'public')));
 
 const base44 = createClient({
@@ -35,8 +35,33 @@ app.post('/api/generate-statement', async (req, res) => {
   }
 });
 
+// NEPRŮSTŘELNÁ HLAVNÍ STRÁNKA S DIAGNOSTIKOU
+app.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        // Pokud soubor neexistuje, vypíšeme co na serveru skutečně je
+        const filesRoot = fs.readdirSync(__dirname).join('<br>');
+        let filesPublic = 'Složka public neexistuje';
+        
+        if (fs.existsSync(path.join(__dirname, 'public'))) {
+            filesPublic = fs.readdirSync(path.join(__dirname, 'public')).join('<br>');
+        }
+
+        res.status(404).send(`
+            <h2>Soubor index.html nebyl nalezen!</h2>
+            <p>Railway se snaží načíst HTML, ale soubor tam není. Zde je obsah vašeho serveru:</p>
+            <h3>Hlavní složka projektu:</h3>
+            <code>${filesRoot}</code>
+            <h3>Složka public:</h3>
+            <code>${filesPublic}</code>
+        `);
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Konzole běží na portu: ${PORT}`);
-  console.log(`Hledám statické soubory ve složce: ${path.join(__dirname, 'public')}`);
 });
