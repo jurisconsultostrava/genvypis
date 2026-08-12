@@ -103,7 +103,7 @@ app.get('/', (req, res) => {
 </html>
     `);
 });
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, '8.0.8.0', () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Konzole běží na portu: ${PORT} (prijima externi spojeni)`);
 });
